@@ -1,0 +1,59 @@
+<h1>Редактирование экспоната</h1>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | Музейный каталог</title>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+</head>
+<form action="/exhibits/<%= exhibit.id %>?_method=PUT" method="POST" class="exhibit-form" enctype="application/x-www-form-urlencoded">
+    <div class="form-group">
+        <label for="name">Название:</label>
+        <input type="text" id="name" name="name" value="<%= exhibit.name %>" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="description">Описание:</label>
+        <textarea id="description" name="description" required><%= exhibit.description %></textarea>
+    </div>
+    
+    <div class="form-row">
+        <div class="form-group">
+            <label for="creationDate">Дата создания:</label>
+            <input type="date" id="creationDate" name="creationDate" 
+       value="<%= new Date(exhibit.creationDate).toISOString().split('T')[0] %>" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="author">Автор:</label>
+            <input type="text" id="author" name="author" value="<%= exhibit.author %>" required>
+        </div>
+    </div>
+    
+    <div class="form-row">
+        <div class="form-group">
+            <label for="collectionType">Тип коллекции:</label>
+            <select id="collectionType" name="collectionType" required>
+                <option value="painting" <%= exhibit.collectionType === 'painting' ? 'selected' : '' %>>Картина</option>
+                <option value="sculpture" <%= exhibit.collectionType === 'sculpture' ? 'selected' : '' %>>Скульптура</option>
+                <option value="artifact" <%= exhibit.collectionType === 'artifact' ? 'selected' : '' %>>Артефакт</option>
+                <option value="document" <%= exhibit.collectionType === 'document' ? 'selected' : '' %>>Документ</option>
+                <option value="other" <%= exhibit.collectionType === 'other' ? 'selected' : '' %>>Другое</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="location">Местоположение:</label>
+            <input type="text" id="location" name="location" value="<%= exhibit.location %>" required>
+        </div>
+    </div>
+    
+    <div class="form-group checkbox">
+        <input type="checkbox" id="isOnDisplay" name="isOnDisplay" value="1" <%= exhibit.isOnDisplay ? 'checked' : '' %>>
+        <label for="isOnDisplay">Находится на выставке</label>
+    </div>
+    
+    <div class="form-actions">
+        <button type="submit" class="btn primary">Сохранить изменения</button>
+        <a href="/" class="btn secondary">Отмена</a>
+    </div>
+</form>

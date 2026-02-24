@@ -1,0 +1,50 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | Музейный каталог</title>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+</head>
+<!-- Форма фильтрации -->
+<form id="filterForm" method="GET" action="/exhibits">
+  <div class="filter-section">
+    <label for="collectionType">Категория:</label>
+    <select name="collectionType" id="collectionType">
+      <option value="">Все категории</option>
+      <option value="painting">Живопись</option>
+      <option value="sculpture">Скульптура</option>
+      <option value="artifact">Артефакты</option>
+      <option value="document">Документы</option>
+      <option value="other">Другое</option>
+    </select>
+  </div>
+  
+  <div class="filter-section">
+    <label for="isOnDisplay">На выставке:</label>
+    <select name="isOnDisplay" id="isOnDisplay">
+      <option value="">Все</option>
+      <option value="true">Да</option>
+      <option value="false">Нет</option>
+    </select>
+  </div>
+  
+  <div class="filter-section">
+    <label for="author">Автор:</label>
+    <input type="text" name="author" id="author" placeholder="Имя автора">
+  </div>
+  
+  <button type="submit" class="btn-filter">Применить фильтры</button>
+  <a href="/exhibits" class="btn-reset">Сбросить</a>
+</form>
+
+<!-- Список экспонатов -->
+<div class="exhibits-container">
+  <% exhibits.forEach(exhibit => { %>
+    <div class="exhibit-card">
+      <h3><%= exhibit.name %></h3>
+      <p><strong>Автор:</strong> <%= exhibit.author %></p>
+      <p><strong>Категория:</strong> <%= translateCollectionType(exhibit.collectionType) %></p>
+      <!-- Остальные поля -->
+    </div>
+  <% }); %>
+</div>
+</div>

@@ -1,0 +1,108 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | Музейный каталог</title>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+</head>
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+  const deleteButtons = document.querySelectorAll('.btn-delete');
+  
+  deleteButtons.forEach(button => {
+    button.addEventListener('click', async function() {
+      const exhibitId = this.getAttribute('data-id');
+      if (!confirm('Вы уверены, что хотите удалить этот экспонат?')) {
+        return;
+      }
+      
+      try {
+        const response = await fetch(`/exhibits/${exhibitId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error('Ошибка при удалении');
+        }
+        
+        window.location.reload();
+      } catch (error) {
+        console.error('Ошибка:', error);
+        alert('Не удалось удалить экспонат');
+      }
+    });
+  });
+});
+</script>
+<div class="container">
+    <div class="header-actions">
+        <h1>Каталог экспонатов</h1>
+    <div class="filter-section">
+        <form method="GET" action="/exhibits" class="filter-form">
+            <div class="form-group">
+                <label for="collectionType">Фильтр по категории:</label>
+                <select name="collectionType" id="collectionType" class="form-control">
+                    <option value="">Все категории</option>
+                    <% collectionTypes.forEach(type => { %>
+                        <option value="<%= type.value %>"><%= type.label %></option>
+                    <% }); %>
+                </select>
+            </div>
+            <div class="filter-buttons">
+                <button type="submit" class="btn btn-filter">Применить фильтр</button>
+                <a href="/exhibits" class="btn btn-clear">Сбросить фильтр</a>
+            </div>
+        </form>
+    </div>
+
+        <a href="/exhibits/add" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Добавить экспонат
+        </a>
+    </div>
+
+
+
+    <% if (exhibits.length === 0) { %>
+        <div class="empty-state">
+            <p>Экспонатов пока нет</p>
+            <a href="/exhibits/add" class="btn btn-primary">
+                Добавить первый экспонат
+            </a>
+        </div>
+    <% } else { %>
+        <div class="exhibits-grid">
+            <% exhibits.forEach(exhibit => { %>
+                <div class="exhibit-card">
+                    <h3><%= exhibit.name %></h3>
+                    <p class="meta">
+                        <span class="author"><%= exhibit.author %></span>
+                        <span class="type"><%= translateCollectionType(exhibit.collectionType) %></span>
+                    </p>
+                    <div class="actions">
+                        <a href="/exhibits/<%= exhibit.id %>/edit" class="btn btn-sm btn-edit">
+                            <i class="fas fa-edit"></i> Изменить
+                        </a>
+                       <button class="btn btn-sm btn-delete" data-id="<%= exhibit.id %>">
+                        <i class="fas fa-trash"></i> Удалить
+                        </button>
+                        <% if (typeof success !== 'undefined' && success === 'deleted') { %>
+                        <div class="alert alert-success">Экспонат успешно удален</div>
+                        <% } %>
+
+                            <% if (typeof error !== 'undefined') { %>
+                            <div class="alert alert-danger">
+                                 <% if (error === 'not_found') { %>
+                                    Экспонат не найден
+                                <% } else if (error === 'delete_failed') { %>
+                                     Не удалось удалить экспонат
+                                 <% } %>
+                                </div>
+                            <% } %>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    <% } %>
+</div>
